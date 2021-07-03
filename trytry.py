@@ -293,7 +293,7 @@ elif menubar == 'News':
     with Cnews:
         endp = st.session_state.count
         startp = endp - 5
-        url = 'https://stockanalysis.com/stocks/AAPL'
+        url = 'https://stockanalysis.com/stocks/'+asset
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'class': 'sa-h1'}).text
