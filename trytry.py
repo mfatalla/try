@@ -9,6 +9,14 @@ from plotly.subplots import make_subplots
 import numpy as np
 import datetime as dt
 
+st.set_page_config(
+    page_title = 'SLAPSOIL',
+    page_icon = '💜',
+    layout= 'wide',
+    initial_sidebar_state="expanded",
+)
+
+
 
 @st.cache(suppress_st_warning=True)
 def load_data():
@@ -175,181 +183,6 @@ if menubar == 'Overview':
                 st.subheader(f"{asset} historical data")
                 st.write(data2)
 
-        st.title("Candlestick Chart")
-
-
-        @st.cache(suppress_st_warning=True)
-        def candle():
-            candlestick = st.beta_container()
-            with candlestick:
-
-                    candlechart_expander = st.beta_expander(label='Line Chart Settings')
-                    with candlechart_expander:
-                        intervalList = ["1m", "5m", "15m", "30m"]
-                        query_paramsa5 = st.experimental_get_query_params()
-                        default5 = int(query_paramsa5["sort"][0]) if "sort" in query_paramsa5 else 2
-                        interval = st.selectbox(
-                            'Interval in minutes',
-                            intervalList,
-                            index=default5
-                        )
-
-                        if interval:
-                            st.experimental_set_query_params(sort=intervalList.index(interval))
-
-                        dayList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                                   16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-                        query_paramsa6 = st.experimental_get_query_params()
-                        default6 = int(query_paramsa6["chartdays"][0]) if "chartdays" in query_paramsa6 else 9
-                        chartdays = st.selectbox(
-                            'No. of Days',
-                            dayList,
-                            index=default6
-                        )
-                        if chartdays:
-                            st.experimental_set_query_params(chartdays=dayList.index(chartdays))
-
-                        candlebutton = st.button('Candlestick Set')
-
-                    stock = yf.Ticker(asset)
-                    history_data = stock.history(interval=interval, period=str(chartdays) + "d")
-                    prices = history_data['Close']
-                    volumes = history_data['Volume']
-
-                    lower = prices.min()
-                    upper = prices.max()
-
-                    prices_ax = np.linspace(lower, upper, num=20)
-
-                    vol_ax = np.zeros(20)
-
-                    for i in range(0, len(volumes)):
-                        if (prices[i] >= prices_ax[0] and prices[i] < prices_ax[1]):
-                            vol_ax[0] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[1] and prices[i] < prices_ax[2]):
-                            vol_ax[1] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[2] and prices[i] < prices_ax[3]):
-                            vol_ax[2] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[3] and prices[i] < prices_ax[4]):
-                            vol_ax[3] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[4] and prices[i] < prices_ax[5]):
-                            vol_ax[4] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[5] and prices[i] < prices_ax[6]):
-                            vol_ax[5] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[6] and prices[i] < prices_ax[7]):
-                            vol_ax[6] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[7] and prices[i] < prices_ax[8]):
-                            vol_ax[7] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[8] and prices[i] < prices_ax[9]):
-                            vol_ax[8] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[9] and prices[i] < prices_ax[10]):
-                            vol_ax[9] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[10] and prices[i] < prices_ax[11]):
-                            vol_ax[10] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[11] and prices[i] < prices_ax[12]):
-                            vol_ax[11] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[12] and prices[i] < prices_ax[13]):
-                            vol_ax[12] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[13] and prices[i] < prices_ax[14]):
-                            vol_ax[13] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[14] and prices[i] < prices_ax[15]):
-                            vol_ax[14] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[15] and prices[i] < prices_ax[16]):
-                            vol_ax[15] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[16] and prices[i] < prices_ax[17]):
-                            vol_ax[16] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[17] and prices[i] < prices_ax[18]):
-                            vol_ax[17] += volumes[i]
-
-                        elif (prices[i] >= prices_ax[18] and prices[i] < prices_ax[19]):
-                            vol_ax[18] += volumes[i]
-
-                        else:
-                            vol_ax[19] += volumes[i]
-
-                    fig = make_subplots(
-                        rows=1, cols=2,
-                        column_widths=[0.2, 0.8],
-                        specs=[[{}, {}]],
-                        horizontal_spacing=0.01
-
-                    )
-
-                    fig.add_trace(
-                        go.Bar(
-                            x=vol_ax,
-                            y=prices_ax,
-                            text=np.around(prices_ax, 2),
-                            textposition='auto',
-                            orientation='h'
-                        ),
-
-                        row=1, col=1
-                    )
-
-                    dateStr = history_data.index.strftime("%d-%m-%Y %H:%M:%S")
-
-                    fig.add_trace(
-                        go.Candlestick(x=dateStr,
-                                       open=history_data['Open'],
-                                       high=history_data['High'],
-                                       low=history_data['Low'],
-                                       close=history_data['Close'],
-                                       yaxis="y2"
-
-                                       ),
-
-                        row=1, col=2
-                    )
-
-                    fig.update_layout(
-                        title_text='Market Profile Chart (US S&P 500)',  # title of plot
-                        bargap=0.01,  # gap between bars of adjacent location coordinates,
-                        showlegend=False,
-
-                        xaxis=dict(
-                            showticklabels=False
-                        ),
-                        yaxis=dict(
-                            showticklabels=False
-                        ),
-
-                        yaxis2=dict(
-                            title="Price (USD)",
-                            side="right"
-
-                        )
-
-                    )
-
-                    fig.update_yaxes(nticks=20)
-                    fig.update_yaxes(side="right")
-                    fig.update_layout(height=800)
-
-                    config = {
-                        'modeBarButtonsToAdd': ['drawline']
-                    }
-
-                    st.plotly_chart(fig, use_container_width=True, config=config)
-
-
     with right:
         st.image('data//logo1.png')
 
@@ -428,6 +261,121 @@ if menubar == 'Overview':
 
 elif menubar == 'News':
     st.image('data//logo1.png')
+    with st.form(key='news_form'):
+        col1, col2, col3, col4 = st.beta_columns([2, 2, 2, 1])
+        with col1:
+            attri = ['Company News', 'Stock Market News']
+            query_paramsa1 = st.experimental_get_query_params()
+            default1 = int(query_paramsa1["attributes"][0]) if "attributes" in query_paramsa1 else 0
+            attributes = st.radio(
+                'News',
+                attri,
+                index=default1
+            )
+            if attributes:
+                st.experimental_set_query_params(attributes=attri.index(attributes))
+        with col2:
+
+            noList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                      16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+            query_paramsa2 = st.experimental_get_query_params()
+            default2 = int(query_paramsa2["count"][0]) if "count" in query_paramsa2 else 9
+            count = st.selectbox(
+                'No. of News',
+                noList,
+                index=default2
+            )
+            if count:
+                st.experimental_set_query_params(count=noList.index(count))
+
+        with col3:
+            sortList = ['Most Recent', 'Previous News']
+            query_paramsa3 = st.experimental_get_query_params()
+            default3 = int(query_paramsa3["sort"][0]) if "sort" in query_paramsa3 else 0
+            sort = st.selectbox(
+                'Sort',
+                sortList,
+                index=default3
+            )
+
+            if sort:
+                st.experimental_set_query_params(sort=sortList.index(sort))
+
+            if sort == 'Most Recent':
+                DSort = (range(count))
+            elif sort == 'Previous News':
+                DSort = reversed((range(count)))
+
+        with col4:
+            st.markdown("")
+            st.markdown("")
+            submit_button = st.form_submit_button(label='Search')
+
+    if attributes == "Company News":
+
+        url = 'https://stockanalysis.com/stocks/' + asset
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        name = soup.find('h1', {'class': 'sa-h1'}).text
+        x = 0
+        for x in DSort:
+            newsTitle = soup.find_all('div', {'class': 'news-side'})[x].find('div').text
+            newsThumbnail = soup.find_all('div', {'class': 'news-img'})[x].find('img')
+            newsBody = soup.find_all('div', {'class': 'news-text'})[x].find('p').text
+            subMeta = soup.find_all('div', {'class': 'news-meta'})[x].find_next('span').text
+            hreflink = soup.find_all('div', {'class': 'news-img'})[x].find('a')
+            link = hreflink.get('href')
+            wap = newsThumbnail.get('data-src')
+            chart1, chart2, chart3 = st.beta_columns([1, 2, 1])
+            with chart1:
+                st.image(wap)
+            with chart2:
+                st.markdown(f"<h1 style='font-weight: bold; font-size: 17px;'>{newsTitle}</h1>",
+                            unsafe_allow_html=True)
+                st.markdown(newsBody)
+                link = "(" + link + ")"
+                aye = '[[Link]]' + link
+                st.markdown("Source: " + aye, unsafe_allow_html=True)
+                st.text(" ")
+                st.text(" ")
+            with chart3:
+                st.markdown(subMeta)
+        st.text(" ")
+
+    elif attributes == "Stock Market News":
+
+        url = 'https://stockanalysis.com/news'
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        title = soup.find('h1', {'class': 'entry-title'}).text
+
+        x = 0
+        for x in DSort:
+            newsTitle1 = soup.find_all('div', {'class': 'news-side'})[x].find('div').text
+            time1 = soup.find_all('div', {'class': 'news-meta'})[x].find('span').text
+            newsThumbnail1 = soup.find_all('div', {'class': 'news-img'})[x].find('img')
+            newsBody1 = soup.find_all('div', {'class': 'news-text'})[x].find('p').text
+            hreflink1 = soup.find_all('div', {'class': 'news-img'})[x].find('a')
+            link1 = hreflink1.get('href')
+            newsimg1 = newsThumbnail1.get('data-src')
+
+            chart1, chart2, chart3 = st.beta_columns([1, 2, 1])
+            with chart1:
+                st.image(newsimg1)
+            with chart2:
+                st.markdown(f"<h1 style='font-weight: bold; font-size: 17px;'>{newsTitle1}</h1>",
+                            unsafe_allow_html=True)
+                st.markdown(newsBody1)
+                link1 = "(" + link1 + ")"
+                concatclink = '[[Link]]' + link1
+                st.markdown("Source: " + concatclink, unsafe_allow_html=True)
+                st.text(" ")
+                st.text(" ")
+
+            with chart3:
+                st.markdown(time1)
+
+        st.text(" ")
 
 elif menubar == 'Technical Indicators':
     st.image('data//logo1.png')
