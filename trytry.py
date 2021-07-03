@@ -174,7 +174,7 @@ if menubar == 'Overview':
             if st.checkbox("View quotes"):
                 st.subheader(f"{asset} historical data")
                 st.write(data2)
-        """
+
         st.title("Candlestick Chart")
         candlestick = st.beta_container()
         with candlestick:
@@ -344,7 +344,7 @@ if menubar == 'Overview':
                 }
 
                 st.plotly_chart(fig, use_container_width=True, config=config)
-                """
+
 
     with right:
         st.image('data//logo1.png')
