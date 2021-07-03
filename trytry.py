@@ -399,7 +399,7 @@ elif menubar == 'News':
 
 elif menubar == 'Technical Indicators':
 
-    tech = st.beta_container
+    tech = st.beta_container()
     with tech:
         def calcMovingAverage(datatech, size):
             dftech = datatech.copy()
