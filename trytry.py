@@ -399,9 +399,9 @@ elif menubar == 'News':
 
 
 elif menubar == 'Technical Indicators':
-    technical.Scrappy(asset)
+    st.image('data//logo1.png')
 elif menubar == 'Company Profile':
-    profile.Profile(asset)
+    st.image('data//logo1.png')
 
 
 elif menubar == 'About':
