@@ -133,10 +133,12 @@ with formtab:
         unsafe_allow_html=True)
 
 if menubar == 'Overview':
-    def overview(asset):
+    overview = st.beta_container()
+    with overview:
         left, right = st.beta_columns([1,1])
         with left:
-            def linechart(asset):
+            linechart = st.beta_container()
+            with linechart:
                 st.subheader("Line Chart")
                 st.write("")
                 linechart = st.beta_container()
@@ -182,10 +184,10 @@ if menubar == 'Overview':
                         linebutton = st.button('Linechart Set')
 
                     st.line_chart(data2, height=400)
-            linechart(asset)
 
         with right:
-            def summary(asset):
+            summary = st.beta_container()
+            with summary:
                 urlfortable = 'https://stockanalysis.com/stocks/' + asset
                 page = requests.get(urlfortable)
                 doc = lh.fromstring(page.content)
@@ -225,11 +227,9 @@ if menubar == 'Overview':
                 st.table(final_table)
                 st.subheader("About")
                 st.info(info['longBusinessSummary'])
-            summary(asset)
-    overview(asset)
 
-
-    def overviewNews(asset):
+    overviewNews = st.beta_container()
+    with overviewNews:
         st.subheader("News")
         urlq = 'https://stockanalysis.com/stocks/' + asset
         responseq = requests.get(urlq)
@@ -263,10 +263,10 @@ if menubar == 'Overview':
                 st.markdown(subMetaq)
 
         st.text(" ")
-    overviewNews(asset)
 
 elif menubar == 'News':
-    def news(asset):
+    news = st.beta_container()
+    with news:
         if "page" not in st.session_state:
             st.session_state.page = 0
             st.session_state.count = 5
@@ -399,7 +399,7 @@ elif menubar == 'News':
                 col1.write("")  # this makes the empty column show up on mobile
 
             col2.write(f"Page {1 + st.session_state.page2} of {5}")
-    news(asset)
+            
 elif menubar == 'Technical Indicators':
     st.image('data//developer1.png')
 
@@ -407,7 +407,7 @@ elif menubar == 'Technical Indicators':
 elif menubar == 'Company Profile':
     st.image('data//developer1.png')
 
-    
+
 elif menubar == 'About':
 
     st.write("")
