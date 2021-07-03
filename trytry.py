@@ -397,32 +397,32 @@ elif menubar == 'News':
 
 
 elif menubar == 'Technical Indicators':
-    def calcMovingAverage(data, size):
-        df = data.copy()
-        df['sma'] = df['Adj Close'].rolling(size).mean()
-        df['ema'] = df['Adj Close'].ewm(span=size, min_periods=size).mean()
-        df.dropna(inplace=True)
-        return df
+    def calcMovingAverage(datatech, size):
+        dftech = datatech.copy()
+        dftech['sma'] = dftech['Adj Close'].rolling(size).mean()
+        dftech['ema'] = dftech['Adj Close'].ewm(span=size, min_periods=size).mean()
+        dftech.dropna(inplace=True)
+        return dftech
 
 
-    def calc_macd(data):
-        df = data.copy()
-        df['ema12'] = df['Adj Close'].ewm(span=12, min_periods=12).mean()
-        df['ema26'] = df['Adj Close'].ewm(span=26, min_periods=26).mean()
-        df['macd'] = df['ema12'] - df['ema26']
-        df['signal'] = df['macd'].ewm(span=9, min_periods=9).mean()
-        df.dropna(inplace=True)
-        return df
+    def calc_macd(datatech):
+        dftech = datatech.copy()
+        dftech['ema12'] = dftech['Adj Close'].ewm(span=12, min_periods=12).mean()
+        dftech['ema26'] = dftech['Adj Close'].ewm(span=26, min_periods=26).mean()
+        dftech['macd'] = dftech['ema12'] - dftech['ema26']
+        dftech['signal'] = dftech['macd'].ewm(span=9, min_periods=9).mean()
+        dftech.dropna(inplace=True)
+        return dftech
 
 
-    def calcBollinger(data, size):
-        df = data.copy()
-        df["sma"] = df['Adj Close'].rolling(size).mean()
-        df["bolu"] = df["sma"] + 2 * df['Adj Close'].rolling(size).std(ddof=0)
-        df["bold"] = df["sma"] - 2 * df['Adj Close'].rolling(size).std(ddof=0)
-        df["width"] = df["bolu"] - df["bold"]
-        df.dropna(inplace=True)
-        return df
+    def calcBollinger(datatech, size):
+        dftech = datatech.copy()
+        dftech["sma"] = dftech['Adj Close'].rolling(size).mean()
+        dftech["bolu"] = dftech["sma"] + 2 * dftech['Adj Close'].rolling(size).std(ddof=0)
+        dftech["bold"] = dftech["sma"] - 2 * dftech['Adj Close'].rolling(size).std(ddof=0)
+        dftech["width"] = dftech["bolu"] - dftech["bold"]
+        dftech.dropna(inplace=True)
+        return dftech
 
 
     st.title('Technical Indicators')
@@ -597,7 +597,6 @@ elif menubar == 'Technical Indicators':
 
     figBoll.update_yaxes(tickprefix="$")
     st.plotly_chart(figBoll, use_container_width=True)
-
 elif menubar == 'Company Profile':
     st.title('Company Profile')
     st.subheader(info['longName'])
