@@ -261,38 +261,7 @@ if menubar == 'Overview':
 
 elif menubar == 'News':
 
-    Cnews = st.beta_expander("Company News")
-    with Cnews:
-        url = 'https://stockanalysis.com/stocks/' + asset
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', {'class': 'sa-h1'}).text
-        x = 0
-        for x in range(10):
-            newsTitle = soup.find_all('div', {'class': 'news-side'})[x].find('div').text
-            newsThumbnail = soup.find_all('div', {'class': 'news-img'})[x].find('img')
-            newsBody = soup.find_all('div', {'class': 'news-text'})[x].find('p').text
-            subMeta = soup.find_all('div', {'class': 'news-meta'})[x].find_next('span').text
-            hreflink = soup.find_all('div', {'class': 'news-img'})[x].find('a')
-            link = hreflink.get('href')
-            wap = newsThumbnail.get('data-src')
-            chart1, chart2, chart3 = st.beta_columns([1, 2, 1])
-            with chart1:
-                st.image(wap)
-            with chart2:
-                st.markdown(f"<h1 style='font-weight: bold; font-size: 17px;'>{newsTitle}</h1>",
-                            unsafe_allow_html=True)
-                st.markdown(newsBody)
-                link = "(" + link + ")"
-                aye = '[[Link]]' + link
-                st.markdown("Source: " + aye, unsafe_allow_html=True)
-                st.text(" ")
-                st.text(" ")
-            with chart3:
-                st.markdown(subMeta)
-        st.text(" ")
-
-    Onews = st.beta_expander("Stock Market News")
+    Onews = st.beta_expander("Stock Market News", expanded=False)
     with Onews:
         url = 'https://stockanalysis.com/news'
         response = requests.get(url)
@@ -326,6 +295,39 @@ elif menubar == 'News':
                 st.markdown(time1)
 
         st.text(" ")
+
+    Cnews = st.beta_expander("Company News",expanded=True)
+    with Cnews:
+        url = 'https://stockanalysis.com/stocks/' + asset
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        name = soup.find('h1', {'class': 'sa-h1'}).text
+        x = 0
+        for x in range(10):
+            newsTitle = soup.find_all('div', {'class': 'news-side'})[x].find('div').text
+            newsThumbnail = soup.find_all('div', {'class': 'news-img'})[x].find('img')
+            newsBody = soup.find_all('div', {'class': 'news-text'})[x].find('p').text
+            subMeta = soup.find_all('div', {'class': 'news-meta'})[x].find_next('span').text
+            hreflink = soup.find_all('div', {'class': 'news-img'})[x].find('a')
+            link = hreflink.get('href')
+            wap = newsThumbnail.get('data-src')
+            chart1, chart2, chart3 = st.beta_columns([1, 2, 1])
+            with chart1:
+                st.image(wap)
+            with chart2:
+                st.markdown(f"<h1 style='font-weight: bold; font-size: 17px;'>{newsTitle}</h1>",
+                            unsafe_allow_html=True)
+                st.markdown(newsBody)
+                link = "(" + link + ")"
+                aye = '[[Link]]' + link
+                st.markdown("Source: " + aye, unsafe_allow_html=True)
+                st.text(" ")
+                st.text(" ")
+            with chart3:
+                st.markdown(subMeta)
+        st.text(" ")
+
+
 
 
 elif menubar == 'Technical Indicators':
