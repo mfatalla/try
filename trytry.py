@@ -174,7 +174,7 @@ if menubar == 'Overview':
             if st.checkbox("View quotes"):
                 st.subheader(f"{asset} historical data")
                 st.write(data2)
-
+        """
         st.title("Candlestick Chart")
         candlestick = st.beta_container()
         with candlestick:
@@ -344,6 +344,7 @@ if menubar == 'Overview':
                 }
 
                 st.plotly_chart(fig, use_container_width=True, config=config)
+                """
 
     with right:
         st.image('data//logo1.png')
@@ -388,6 +389,36 @@ if menubar == 'Overview':
             st.table(final_table) """
 
 
+    urlq = 'https://stockanalysis.com/stocks/' + asset
+    responseq = requests.get(urlq)
+    soupq = BeautifulSoup(responseq.text, 'html.parser')
+
+    samplenewscount = 0
+    for samplenewscount in range(10):
+        newsTitleq = soupq.find_all('div', {'class': 'news-side'})[samplenewscount].find('div').text
+        newsThumbnailq = soupq.find_all('div', {'class': 'news-img'})[samplenewscount].find('img')
+        newsBodyq = soupq.find_all('div', {'class': 'news-text'})[samplenewscount].find('p').text
+        subMetaq = soupq.find_all('div', {'class': 'news-meta'})[samplenewscount].find_next('span').text
+        hreflinkq = soupq.find_all('div', {'class': 'news-img'})[samplenewscount].find('a')
+        linkq = hreflinkq.get('href')
+        wapq = newsThumbnailq.get('data-src')
+
+
+        chart1q, chart2q, chart3q = st.beta_columns([1, 2, 3])
+        with chart1q:
+            st.image(wapq)
+        with chart2q:
+            st.markdown(f"<h1 style='font-weight: bold; font-size: 17px;'>{newsTitleq}</h1>",
+                        unsafe_allow_html=True)
+            st.markdown(newsBodyq)
+            linkq = "(" + linkq + ")"
+            ayeq = '[[Link]]' + linkq
+            st.markdown("Source: " + ayeq, unsafe_allow_html=True)
+            st.text(" ")
+            st.text(" ")
+
+        with chart3q:
+            st.markdown(subMetaq)
 
     st.text(" ")
 
