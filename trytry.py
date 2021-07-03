@@ -4,6 +4,8 @@ import pandas as pd
 import streamlit as st
 import yfinance as yf
 from bs4 import BeautifulSoup
+import profile
+import technical
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import numpy as np
@@ -397,9 +399,9 @@ elif menubar == 'News':
 
 
 elif menubar == 'Technical Indicators':
-    st.image('data//logo1.png')
+    technical.Scrappy(asset)
 elif menubar == 'Company Profile':
-    st.image('data//logo1.png')
+    profile.Profile(asset)
 
 
 elif menubar == 'About':
