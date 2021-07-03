@@ -348,7 +348,7 @@ if menubar == 'Overview':
 
     with right:
         st.image('data//logo1.png')
-        """
+
         summarytable = st.beta_container()
         with summarytable:
             urlfortable = 'https://stockanalysis.com/stocks/'+asset
@@ -386,7 +386,7 @@ if menubar == 'Overview':
                 {"": list(mylist2), "Value": list(mylist1), " ": list(mylist4), "Value ": list(mylist3)})
             final_table.index = [""] * len(final_table)
             st.title("Summary")
-            st.table(final_table) """
+            st.table(final_table)
 
 
     urlq = 'https://stockanalysis.com/stocks/' + asset
