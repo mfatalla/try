@@ -400,7 +400,7 @@ elif menubar == 'News':
 elif menubar == 'Technical Indicators':
 
     tech = st.beta_container
-    with:
+    with tech:
         def calcMovingAverage(datatech, size):
             dftech = datatech.copy()
             dftech['sma'] = dftech['Adj Close'].rolling(size).mean()
