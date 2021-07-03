@@ -8,39 +8,54 @@ from collections import defaultdict
 import csv
 
 
-snp500 = pd.read_csv("data//updatated_ticker.csv")
-symbols = snp500['Symbol'].sort_values().tolist()
-snp500 = pd.read_csv("data//updatated_ticker.csv")
-wap = snp500[['Symbol','Name']]
+@st.cache(suppress_st_warning=True)
+def load_data():
+    components = pd.read_html(
+        "https://en.wikipedia.org/wiki/List_of_S" "%26P_500_companies"
+    )[0]
+    return components.drop("SEC filings", axis=1).set_index("Symbol")
 
-columns = defaultdict(list) # each value in each column is appended to a list
 
-with open('data//updatated_ticker.csv') as f:
-    reader = csv.DictReader(f) # read rows into a dictionary format
-    for row in reader: # read a row as {column1: value1, column2: value2,...}
-        for (k,v) in row.items(): # go over each column name and value
-            columns[k].append(v) # append the value into the appropriate list
-symbols = columns['Symbol']
-company = columns['Name']
+@st.cache(suppress_st_warning=True)
+def load_quotes(asset):
+    return yf.download(asset)
 
-radio_list = symbols
+
+
+menu = ['Overview', 'News', 'Technical Indicators', 'Company Profile', 'About']
 query_params = st.experimental_get_query_params()
 
-# Query parameters are returned as a list to support multiselect.
-# Get the first item in the list if the query parameter exists.
-default = int(query_params["activity"][0]) if "activity" in query_params else 0
-asset = st.selectbox(
-    "Choose a Company",
-    radio_list,
+default = int(query_params["menubar"][0]) if "menubar" in query_params else 0
+menubar = st.selectbox(
+    "Menu",
+    menu,
     index=default
 )
-if asset:
-    st.experimental_set_query_params(asset=radio_list.index(asset))
+if menubar:
+    st.experimental_set_query_params(menubar=menu.index(menubar))
+
+components = load_data()
+title = st.empty()
+
+st.sidebar.image('data//logo1.png')
+
+def label(symbol):
+    a = components.loc[symbol]
+    return symbol + " - " + a.Security
+
+st.sidebar.subheader("Select asset")
+asset = st.sidebar.selectbox(
+    "Click below to select a new asset",
+    components.index.sort_values(),
+    index=3,
+    format_func=label,
+)
+
 
 
 ticker = yf.Ticker(asset)
 info = ticker.info
-url = 'https://stockanalysis.com/stocks/'+asset
+url = 'https://stockanalysis.com/stocks/' + asset
 response = requests.get(url)
 soup = BeautifulSoup(response.text, 'lxml')
 
@@ -59,7 +74,6 @@ CR = change + " (" + rate + ")"
 CT = after2 + " (" + aftert + ")"
 sub = change
 sub2 = after2
-
 aye = ": After-hours"
 
 formtab = st.sidebar.beta_container()
