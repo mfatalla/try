@@ -309,7 +309,7 @@ elif menubar == 'News':
         with col4:
             st.markdown("")
             st.markdown("")
-            submit_button = st.form_submit_button(label='Search')
+    submit_button = st.form_submit_button(label='Search')
 
  
 
