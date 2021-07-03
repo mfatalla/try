@@ -207,3 +207,7 @@ def Scrappy(tickerinput):
     figBoll.update_yaxes(tickprefix="$")
     st.plotly_chart(figBoll, use_container_width=True)
 
+if __name__ == "__main__":
+    Scrappy()
+
+
