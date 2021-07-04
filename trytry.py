@@ -8,6 +8,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import numpy as np
 import datetime as dt
+from yahooquery import Ticker as YQ
 
 st.set_page_config(
     page_title = 'SLAPSOIL',
@@ -330,6 +331,41 @@ elif menubar == 'News':
         col2.write(f"Page {1 + st.session_state.page2} of {5}")
 elif menubar == 'Technical Indicators':
     st.write("SLAPSOIL")
+    tech = st.beta_container()
+    with tech:
+
+        ticker_input_ti = YQ('AAPL')
+        history_args = {
+            "period": "1y",
+            "interval": "1d",
+            "start": dt.datetime.now() - dt.timedelta(days=365),
+            "end": None,
+        }
+        option_1 = st.selectbox("Select Period or Start / End Dates", ["Period", "Dates"], 0)
+        if option_1 == "Period":
+            history_args["period"] = st.selectbox(
+                "Select Period", options=YQ.PERIODS, index=5  # pylint: disable=protected-access
+            )
+
+            history_args["start"] = None
+            history_args["end"] = None
+        else:
+            history_args["start"] = st.date_input("Select Start Date", value=history_args["start"])
+            history_args["end"] = st.date_input("Select End Date")
+            history_args["period"] = None
+
+        st.markdown("**THEN**")
+        history_args["interval"] = st.selectbox(
+            "Select Interval", options=YQ.INTERVALS, index=8  # pylint: disable=protected-access
+        )
+        args_string = [str(k) + "='" + str(v) + "'" for k, v in history_args.items() if v is not None]
+        st.write("Dataframe")
+        dataframe_ti = ticker_input_ti.history(**history_args)
+
+        if isinstance(dataframe_ti, dict):
+            st.write(dataframe_ti)
+        else:
+            st.dataframe(dataframe_ti)
 
 elif menubar == 'Company Profile':
     profile = st.beta_container()
