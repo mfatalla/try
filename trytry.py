@@ -156,7 +156,7 @@ if menubar == 'Overview':
                     data2[f"SMA2 {period2}"] = data[f"SMA2 {period2}"].reindex(data2.index)
                 linebutton = st.button('Linechart Set')
             st.subheader("Chart")
-            st.line_chart(data2, height=400)
+            st.line_chart(data2, height=700)
             if st.checkbox("View quotes"):
                 st.subheader(f"{asset} historical data")
                 st.write(data2)
@@ -354,7 +354,7 @@ if menubar == 'Overview':
             st.plotly_chart(fig_candle, use_container_width=True, config=config)
 
     candle(asset)
-    
+
     st.subheader("News")
     urlq = 'https://stockanalysis.com/stocks/' + asset
     responseq = requests.get(urlq)
