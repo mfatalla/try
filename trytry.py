@@ -511,7 +511,7 @@ elif menubar == 'Technical Indicators':
             dftech['ema'] = dftech['Adj Close'].ewm(span=size, min_periods=size).mean()
             dftech.dropna(inplace=True)
             return dftech
-
+        calcMovingAverage()
 
         def calc_macd(datatech):
             dftech = datatech.copy()
@@ -522,6 +522,7 @@ elif menubar == 'Technical Indicators':
             dftech.dropna(inplace=True)
             return dftech
 
+        calc_macd()
 
         def calcBollinger(datatech, size):
             dftech = datatech.copy()
@@ -532,9 +533,7 @@ elif menubar == 'Technical Indicators':
             dftech.dropna(inplace=True)
             return dftech
 
-
-        st.title('Technical Indicators')
-        st.subheader('Moving Average')
+        calcBollinger()
 
         coMA1, coMA2 = st.beta_columns(2)
 
