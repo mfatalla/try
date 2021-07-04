@@ -185,6 +185,9 @@ if menubar == 'Overview':
             final_table.index = [""] * len(final_table)
             st.subheader("Summary")
             st.table(final_table)
+
+        st.subheader("About")
+        st.info(info['longBusinessSummary'])
     st.subheader("News")
     urlq = 'https://stockanalysis.com/stocks/' + asset
     responseq = requests.get(urlq)
