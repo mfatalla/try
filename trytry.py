@@ -11,7 +11,7 @@ def candlestick():
 
         intervalList = ["1m", "5m", "15m", "30m"]
         query_paramsa5 = st.experimental_get_query_params()
-        default5 = int(query_paramsa5["interval_candle"][0]) if "interval_candle" in query_paramsa5 else 2
+        default5 = int(query_paramsa5["interval_candle"][0]) if "interval_candle" in query_paramsa5 else 0
         interval_candle = st.selectbox(
             'Interval in minutes',
             intervalList,
@@ -23,7 +23,7 @@ def candlestick():
         dayList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                    16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
         query_paramsa6 = st.experimental_get_query_params()
-        default6 = int(query_paramsa6["chartdays"][0]) if "chartdays" in query_paramsa6 else 9
+        default6 = int(query_paramsa6["chartdays"][0]) if "chartdays" in query_paramsa6 else 0
         chartdays = st.selectbox(
             'No. of Days',
             dayList,
