@@ -331,8 +331,7 @@ elif menubar == 'News':
         col2.write(f"Page {1 + st.session_state.page2} of {5}")
 elif menubar == 'Technical Indicators':
     st.write("SLAPSOIL")
-    
-    @st.cache(suppress_st_warning=True)
+
     def candle(asset):
         candlechart_expander = st.beta_expander(label='Candlestick Chart Settings')
         with candlechart_expander:
