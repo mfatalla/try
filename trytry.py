@@ -5,11 +5,11 @@ from plotly.subplots import make_subplots
 import numpy as np
 
 
-def candlestick(asset):
+def candlestick():
     candlechart_expander = st.beta_expander(label='Line Chart Settings')
     with candlechart_expander:
 
-        stock = yf.Ticker(asset)
+        stock = yf.Ticker('NFLX')
         history_data = stock.history(interval='30m', period=str(15) + "d")
         prices = history_data['Close']
         volumes = history_data['Volume']
@@ -147,3 +147,4 @@ def candlestick(asset):
 
         st.plotly_chart(fig, use_container_width=True, config=config)
 
+candlestick()
