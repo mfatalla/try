@@ -496,7 +496,6 @@ elif menubar == 'Technical Indicators':
                 )
                 data[f"SMA2 {period2}"] = data["Adj Close"].rolling(period2).mean()
                 data2[f"SMA2 {period2}"] = data[f"SMA2 {period2}"].reindex(data2.index)
-            linebutton = st.button('Linechart Set')
         st.subheader("Chart")
         st.line_chart(data2, height=700)
         if st.checkbox("View quotes"):
