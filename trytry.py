@@ -118,48 +118,162 @@ if menubar == 'Overview':
 
     left, right = st.beta_columns([1, 1])
     with left:
-        st.subheader("Line Chart")
-        linechart = st.beta_container()
-        with linechart:
-            linechart_expander = st.beta_expander(label='Line Chart Settings')
-            with linechart_expander:
-                ticker = yf.Ticker(asset)
-                info = ticker.info
-                attri = ['SMA', 'SMA2']
-                attributes = st.multiselect(
-                    'Choose Chart Attributes [SMA, SMA2]',
-                    attri,
-                    default='SMA'
-                )
-                data0 = load_quotes(asset)
-                data = data0.copy().dropna()
-                data.index.name = None
-                section = st.slider(
-                    "Number of quotes",
-                    min_value=30,
-                    max_value=min([2000, data.shape[0]]),
-                    value=500,
-                    step=10,
-                )
-                data2 = data[-section:]["Adj Close"].to_frame("Adj Close")
-                if "SMA" in attributes:
-                    period = st.slider(
-                        "SMA period", min_value=5, max_value=500, value=20, step=1
+
+        def candle(asset):
+            candlechart_expander = st.beta_expander(label='Candlestick Chart Settings', expanded=True)
+            with candlechart_expander:
+
+                CL_L, candle_left, candle_right, CL_R = st.beta_columns([1, 2, 2, 1])
+                with CL_R:
+                    st.write("")
+                with CL_L:
+                    st.write("")
+                with candle_left:
+                    intervalList = ["1m", "5m", "15m", "30m"]
+                    interval_candle = st.selectbox(
+                        'Interval in minutes',
+                        intervalList,
                     )
-                    data[f"SMA {period}"] = data["Adj Close"].rolling(period).mean()
-                    data2[f"SMA {period}"] = data[f"SMA {period}"].reindex(data2.index)
-                if "SMA2" in attributes:
-                    period2 = st.slider(
-                        "SMA2 period", min_value=5, max_value=500, value=100, step=1
+                with candle_right:
+                    dayList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                               16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+                    chartdays = st.selectbox(
+                        'No. of Days',
+                        dayList,
                     )
-                    data[f"SMA2 {period2}"] = data["Adj Close"].rolling(period2).mean()
-                    data2[f"SMA2 {period2}"] = data[f"SMA2 {period2}"].reindex(data2.index)
-                linebutton = st.button('Linechart Set')
-            st.subheader("Chart")
-            st.line_chart(data2, height=700)
-            if st.checkbox("View quotes"):
-                st.subheader(f"{asset} historical data")
-                st.write(data2)
+                stock = yf.Ticker(asset)
+                history_data = stock.history(interval=interval_candle, period=str(chartdays) + "d")
+                prices = history_data['Close']
+                volumes = history_data['Volume']
+
+                lower = prices.min()
+                upper = prices.max()
+
+                prices_ax = np.linspace(lower, upper, num=20)
+
+                vol_ax = np.zeros(20)
+
+                for tech_i in range(0, len(volumes)):
+                    if (prices[tech_i] >= prices_ax[0] and prices[tech_i] < prices_ax[1]):
+                        vol_ax[0] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[1] and prices[tech_i] < prices_ax[2]):
+                        vol_ax[1] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[2] and prices[tech_i] < prices_ax[3]):
+                        vol_ax[2] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[3] and prices[tech_i] < prices_ax[4]):
+                        vol_ax[3] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[4] and prices[tech_i] < prices_ax[5]):
+                        vol_ax[4] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[5] and prices[tech_i] < prices_ax[6]):
+                        vol_ax[5] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[6] and prices[tech_i] < prices_ax[7]):
+                        vol_ax[6] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[7] and prices[tech_i] < prices_ax[8]):
+                        vol_ax[7] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[8] and prices[tech_i] < prices_ax[9]):
+                        vol_ax[8] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[9] and prices[tech_i] < prices_ax[10]):
+                        vol_ax[9] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[10] and prices[tech_i] < prices_ax[11]):
+                        vol_ax[10] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[11] and prices[tech_i] < prices_ax[12]):
+                        vol_ax[11] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[12] and prices[tech_i] < prices_ax[13]):
+                        vol_ax[12] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[13] and prices[tech_i] < prices_ax[14]):
+                        vol_ax[13] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[14] and prices[tech_i] < prices_ax[15]):
+                        vol_ax[14] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[15] and prices[tech_i] < prices_ax[16]):
+                        vol_ax[15] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[16] and prices[tech_i] < prices_ax[17]):
+                        vol_ax[16] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[17] and prices[tech_i] < prices_ax[18]):
+                        vol_ax[17] += volumes[tech_i]
+
+                    elif (prices[tech_i] >= prices_ax[18] and prices[tech_i] < prices_ax[19]):
+                        vol_ax[18] += volumes[tech_i]
+
+                    else:
+                        vol_ax[19] += volumes[tech_i]
+
+                fig_candle = make_subplots(
+                    rows=1, cols=2,
+                    column_widths=[0.2, 0.8],
+                    specs=[[{}, {}]],
+                    horizontal_spacing=0.01
+                )
+
+                fig_candle.add_trace(
+                    go.Bar(
+                        x=vol_ax,
+                        y=prices_ax,
+                        text=np.around(prices_ax, 2),
+                        textposition='auto',
+                        orientation='h'
+                    ),
+                    row=1, col=1
+                )
+
+                dateStr = history_data.index.strftime("%d-%m-%Y %H:%M:%S")
+                fig_candle.add_trace(
+                    go.Candlestick(x=dateStr,
+                                   open=history_data['Open'],
+                                   high=history_data['High'],
+                                   low=history_data['Low'],
+                                   close=history_data['Close'],
+                                   yaxis="y2"
+
+                                   ),
+
+                    row=1, col=2
+                )
+                fig_candle.update_layout(
+                    title_text='Market Profile Chart (US S&P 500)',  # title of plot
+                    bargap=0.01,  # gap between bars of adjacent location coordinates,
+                    showlegend=False,
+
+                    xaxis=dict(
+                        showticklabels=False
+                    ),
+                    yaxis=dict(
+                        showticklabels=False
+                    ),
+
+                    yaxis2=dict(
+                        title="Price (USD)",
+                        side="right"
+                    )
+                )
+                fig_candle.update_yaxes(nticks=20)
+                fig_candle.update_yaxes(side="right")
+                fig_candle.update_layout(height=800)
+
+                config = {
+                    'modeBarButtonsToAdd': ['drawline']
+                }
+                st.plotly_chart(fig_candle, use_container_width=True, config=config)
+
+
+        candle(asset)
+
     with right:
         summarytable = st.beta_container()
         with summarytable:
@@ -201,159 +315,7 @@ if menubar == 'Overview':
         st.subheader("About")
         st.info(info['longBusinessSummary'])
 
-    def candle(asset):
-        candlechart_expander = st.beta_expander(label='Candlestick Chart Settings', expanded= True)
-        with candlechart_expander:
 
-            CL_L, candle_left, candle_right, CL_R = st.beta_columns([1,2,2,1])
-            with CL_R:
-                st.write("")
-            with CL_L:
-                st.write("")
-            with candle_left:
-                intervalList = ["1m", "5m", "15m", "30m"]
-                interval_candle = st.selectbox(
-                    'Interval in minutes',
-                    intervalList,
-                )
-            with candle_right:
-                dayList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                           16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-                chartdays = st.selectbox(
-                    'No. of Days',
-                    dayList,
-                )
-            stock = yf.Ticker(asset)
-            history_data = stock.history(interval=interval_candle, period=str(chartdays) + "d")
-            prices = history_data['Close']
-            volumes = history_data['Volume']
-
-            lower = prices.min()
-            upper = prices.max()
-
-            prices_ax = np.linspace(lower, upper, num=20)
-
-            vol_ax = np.zeros(20)
-
-            for tech_i in range(0, len(volumes)):
-                if (prices[tech_i] >= prices_ax[0] and prices[tech_i] < prices_ax[1]):
-                    vol_ax[0] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[1] and prices[tech_i] < prices_ax[2]):
-                    vol_ax[1] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[2] and prices[tech_i] < prices_ax[3]):
-                    vol_ax[2] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[3] and prices[tech_i] < prices_ax[4]):
-                    vol_ax[3] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[4] and prices[tech_i] < prices_ax[5]):
-                    vol_ax[4] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[5] and prices[tech_i] < prices_ax[6]):
-                    vol_ax[5] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[6] and prices[tech_i] < prices_ax[7]):
-                    vol_ax[6] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[7] and prices[tech_i] < prices_ax[8]):
-                    vol_ax[7] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[8] and prices[tech_i] < prices_ax[9]):
-                    vol_ax[8] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[9] and prices[tech_i] < prices_ax[10]):
-                    vol_ax[9] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[10] and prices[tech_i] < prices_ax[11]):
-                    vol_ax[10] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[11] and prices[tech_i] < prices_ax[12]):
-                    vol_ax[11] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[12] and prices[tech_i] < prices_ax[13]):
-                    vol_ax[12] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[13] and prices[tech_i] < prices_ax[14]):
-                    vol_ax[13] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[14] and prices[tech_i] < prices_ax[15]):
-                    vol_ax[14] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[15] and prices[tech_i] < prices_ax[16]):
-                    vol_ax[15] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[16] and prices[tech_i] < prices_ax[17]):
-                    vol_ax[16] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[17] and prices[tech_i] < prices_ax[18]):
-                    vol_ax[17] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[18] and prices[tech_i] < prices_ax[19]):
-                    vol_ax[18] += volumes[tech_i]
-
-                else:
-                    vol_ax[19] += volumes[tech_i]
-
-            fig_candle = make_subplots(
-                rows=1, cols=2,
-                column_widths=[0.2, 0.8],
-                specs=[[{}, {}]],
-                horizontal_spacing=0.01
-            )
-
-            fig_candle.add_trace(
-                go.Bar(
-                    x=vol_ax,
-                    y=prices_ax,
-                    text=np.around(prices_ax, 2),
-                    textposition='auto',
-                    orientation='h'
-                ),
-                row=1, col=1
-            )
-
-            dateStr = history_data.index.strftime("%d-%m-%Y %H:%M:%S")
-            fig_candle.add_trace(
-                go.Candlestick(x=dateStr,
-                               open=history_data['Open'],
-                               high=history_data['High'],
-                               low=history_data['Low'],
-                               close=history_data['Close'],
-                               yaxis="y2"
-
-                               ),
-
-                row=1, col=2
-            )
-            fig_candle.update_layout(
-                title_text='Market Profile Chart (US S&P 500)',  # title of plot
-                bargap=0.01,  # gap between bars of adjacent location coordinates,
-                showlegend=False,
-
-                xaxis=dict(
-                    showticklabels=False
-                ),
-                yaxis=dict(
-                    showticklabels=False
-                ),
-
-                yaxis2=dict(
-                    title="Price (USD)",
-                    side="right"
-                )
-            )
-            fig_candle.update_yaxes(nticks=20)
-            fig_candle.update_yaxes(side="right")
-            fig_candle.update_layout(height=800)
-
-            config = {
-                'modeBarButtonsToAdd': ['drawline']
-            }
-            st.plotly_chart(fig_candle, use_container_width=True, config=config)
-
-    candle(asset)
 
     st.subheader("News")
     urlq = 'https://stockanalysis.com/stocks/' + asset
@@ -507,155 +469,48 @@ elif menubar == 'News':
             col1.write("")  # this makes the empty column show up on mobile
         col2.write(f"Page {1 + st.session_state.page2} of {5}")
 elif menubar == 'Technical Indicators':
-
-    def candle(asset):
-        candlechart_expander = st.beta_expander(label='Candlestick Chart Settings')
-        with candlechart_expander:
-
-            intervalList = ["1m", "5m", "15m", "30m"]
-            interval_candle = st.selectbox(
-                'Interval in minutes',
-                intervalList,
+    st.subheader("Simple Moving Average Chart")
+    linechart = st.beta_container()
+    with linechart:
+        linechart_expander = st.beta_expander(label='Line Chart Settings')
+        with linechart_expander:
+            ticker = yf.Ticker(asset)
+            info = ticker.info
+            attri = ['SMA', 'SMA2']
+            attributes = st.multiselect(
+                'Choose Chart Attributes [SMA, SMA2]',
+                attri,
+                default='SMA'
             )
-
-            dayList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                       16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-            chartdays = st.selectbox(
-                'No. of Days',
-                dayList,
+            data0 = load_quotes(asset)
+            data = data0.copy().dropna()
+            data.index.name = None
+            section = st.slider(
+                "Number of quotes",
+                min_value=30,
+                max_value=min([2000, data.shape[0]]),
+                value=500,
+                step=10,
             )
-
-            stock = yf.Ticker(asset)
-            history_data = stock.history(interval=interval_candle, period=str(chartdays) + "d")
-            prices = history_data['Close']
-            volumes = history_data['Volume']
-
-            lower = prices.min()
-            upper = prices.max()
-
-            prices_ax = np.linspace(lower, upper, num=20)
-
-            vol_ax = np.zeros(20)
-
-            for tech_i in range(0, len(volumes)):
-                if (prices[tech_i] >= prices_ax[0] and prices[tech_i] < prices_ax[1]):
-                    vol_ax[0] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[1] and prices[tech_i] < prices_ax[2]):
-                    vol_ax[1] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[2] and prices[tech_i] < prices_ax[3]):
-                    vol_ax[2] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[3] and prices[tech_i] < prices_ax[4]):
-                    vol_ax[3] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[4] and prices[tech_i] < prices_ax[5]):
-                    vol_ax[4] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[5] and prices[tech_i] < prices_ax[6]):
-                    vol_ax[5] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[6] and prices[tech_i] < prices_ax[7]):
-                    vol_ax[6] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[7] and prices[tech_i] < prices_ax[8]):
-                    vol_ax[7] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[8] and prices[tech_i] < prices_ax[9]):
-                    vol_ax[8] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[9] and prices[tech_i] < prices_ax[10]):
-                    vol_ax[9] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[10] and prices[tech_i] < prices_ax[11]):
-                    vol_ax[10] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[11] and prices[tech_i] < prices_ax[12]):
-                    vol_ax[11] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[12] and prices[tech_i] < prices_ax[13]):
-                    vol_ax[12] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[13] and prices[tech_i] < prices_ax[14]):
-                    vol_ax[13] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[14] and prices[tech_i] < prices_ax[15]):
-                    vol_ax[14] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[15] and prices[tech_i] < prices_ax[16]):
-                    vol_ax[15] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[16] and prices[tech_i] < prices_ax[17]):
-                    vol_ax[16] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[17] and prices[tech_i] < prices_ax[18]):
-                    vol_ax[17] += volumes[tech_i]
-
-                elif (prices[tech_i] >= prices_ax[18] and prices[tech_i] < prices_ax[19]):
-                    vol_ax[18] += volumes[tech_i]
-
-                else:
-                    vol_ax[19] += volumes[tech_i]
-
-            fig_candle = make_subplots(
-                rows=1, cols=2,
-                column_widths=[0.2, 0.8],
-                specs=[[{}, {}]],
-                horizontal_spacing=0.01
-            )
-
-            fig_candle.add_trace(
-                go.Bar(
-                    x=vol_ax,
-                    y=prices_ax,
-                    text=np.around(prices_ax, 2),
-                    textposition='auto',
-                    orientation='h'
-                ),
-                row=1, col=1
-            )
-
-            dateStr = history_data.index.strftime("%d-%m-%Y %H:%M:%S")
-            fig_candle.add_trace(
-                go.Candlestick(x=dateStr,
-                               open=history_data['Open'],
-                               high=history_data['High'],
-                               low=history_data['Low'],
-                               close=history_data['Close'],
-                               yaxis="y2"
-
-                               ),
-
-                row=1, col=2
-            )
-            fig_candle.update_layout(
-                title_text='Market Profile Chart (US S&P 500)',  # title of plot
-                bargap=0.01,  # gap between bars of adjacent location coordinates,
-                showlegend=False,
-
-                xaxis=dict(
-                    showticklabels=False
-                ),
-                yaxis=dict(
-                    showticklabels=False
-                ),
-
-                yaxis2=dict(
-                    title="Price (USD)",
-                    side="right"
+            data2 = data[-section:]["Adj Close"].to_frame("Adj Close")
+            if "SMA" in attributes:
+                period = st.slider(
+                    "SMA period", min_value=5, max_value=500, value=20, step=1
                 )
-            )
-            fig_candle.update_yaxes(nticks=20)
-            fig_candle.update_yaxes(side="right")
-            fig_candle.update_layout(height=800)
-
-            config = {
-                'modeBarButtonsToAdd': ['drawline']
-            }
-            st.plotly_chart(fig_candle, use_container_width=True, config=config)
-
-    candle(asset)
+                data[f"SMA {period}"] = data["Adj Close"].rolling(period).mean()
+                data2[f"SMA {period}"] = data[f"SMA {period}"].reindex(data2.index)
+            if "SMA2" in attributes:
+                period2 = st.slider(
+                    "SMA2 period", min_value=5, max_value=500, value=100, step=1
+                )
+                data[f"SMA2 {period2}"] = data["Adj Close"].rolling(period2).mean()
+                data2[f"SMA2 {period2}"] = data[f"SMA2 {period2}"].reindex(data2.index)
+            linebutton = st.button('Linechart Set')
+        st.subheader("Chart")
+        st.line_chart(data2, height=700)
+        if st.checkbox("View quotes"):
+            st.subheader(f"{asset} historical data")
+            st.write(data2)
 
 
 elif menubar == 'Company Profile':
