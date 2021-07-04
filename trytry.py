@@ -372,10 +372,10 @@ elif menubar == 'Technical Indicators':
 
     for tech_i in range(0, len(volumes)):
         if (prices[tech_i] >= prices_ax[0] and prices[tech_i] < prices_ax[1]):
-            vol_ax[0] += volumes[i]
+            vol_ax[0] += volumes[tech_i]
 
         elif (prices[tech_i] >= prices_ax[1] and prices[tech_i] < prices_ax[2]):
-            vol_ax[1] += volumes[i]
+            vol_ax[1] += volumes[tech_i]
 
         elif (prices[tech_i] >= prices_ax[2] and prices[tech_i] < prices_ax[3]):
             vol_ax[2] += volumes[tech_i]
@@ -431,7 +431,7 @@ elif menubar == 'Technical Indicators':
         else:
             vol_ax[19] += volumes[tech_i]
 
-    fig = make_subplots(
+    fig_candle = make_subplots(
         rows=1, cols=2,
         column_widths=[0.2, 0.8],
         specs=[[{}, {}]],
@@ -439,7 +439,7 @@ elif menubar == 'Technical Indicators':
 
     )
 
-    fig.add_trace(
+    fig_candle.add_trace(
         go.Bar(
             x=vol_ax,
             y=prices_ax,
@@ -453,7 +453,7 @@ elif menubar == 'Technical Indicators':
 
     dateStr = history_data.index.strftime("%d-%m-%Y %H:%M:%S")
 
-    fig.add_trace(
+    fig_candle.add_trace(
         go.Candlestick(x=dateStr,
                        open=history_data['Open'],
                        high=history_data['High'],
@@ -466,7 +466,7 @@ elif menubar == 'Technical Indicators':
         row=1, col=2
     )
 
-    fig.update_layout(
+    fig_candle.update_layout(
         title_text='Market Profile Chart (US S&P 500)',  # title of plot
         bargap=0.01,  # gap between bars of adjacent location coordinates,
         showlegend=False,
@@ -486,15 +486,15 @@ elif menubar == 'Technical Indicators':
 
     )
 
-    fig.update_yaxes(nticks=20)
-    fig.update_yaxes(side="right")
-    fig.update_layout(height=800)
+    fig_candle.update_yaxes(nticks=20)
+    fig_candle.update_yaxes(side="right")
+    fig_candle.update_layout(height=800)
 
     config = {
         'modeBarButtonsToAdd': ['drawline']
     }
 
-    st.plotly_chart(fig, use_container_width=True, config=config)
+    st.plotly_chart(fig_candle, use_container_width=True, config=config)
 
 
 elif menubar == 'Company Profile':
@@ -575,7 +575,7 @@ elif menubar == 'Company Profile':
         marketDF = pd.DataFrame(data=marketInfo, index=[0])
         st.table(marketDF)
         st.write(info)
-        
+
 elif menubar == 'About':
     st.write("")
     stock_forecast = st.beta_expander("Stock Market Forecast", expanded=False)
