@@ -116,6 +116,91 @@ with formtab:
         unsafe_allow_html=True)
 if menubar == 'Overview':
 
+    left, right = st.beta_columns([1, 1])
+    with left:
+        st.subheader("Line Chart")
+        linechart = st.beta_container()
+        with linechart:
+            linechart_expander = st.beta_expander(label='Line Chart Settings')
+            with linechart_expander:
+                ticker = yf.Ticker(asset)
+                info = ticker.info
+                attri = ['SMA', 'SMA2']
+                attributes = st.multiselect(
+                    'Choose Chart Attributes [SMA, SMA2]',
+                    attri,
+                    default='SMA'
+                )
+                data0 = load_quotes(asset)
+                data = data0.copy().dropna()
+                data.index.name = None
+                section = st.slider(
+                    "Number of quotes",
+                    min_value=30,
+                    max_value=min([2000, data.shape[0]]),
+                    value=500,
+                    step=10,
+                )
+                data2 = data[-section:]["Adj Close"].to_frame("Adj Close")
+                if "SMA" in attributes:
+                    period = st.slider(
+                        "SMA period", min_value=5, max_value=500, value=20, step=1
+                    )
+                    data[f"SMA {period}"] = data["Adj Close"].rolling(period).mean()
+                    data2[f"SMA {period}"] = data[f"SMA {period}"].reindex(data2.index)
+                if "SMA2" in attributes:
+                    period2 = st.slider(
+                        "SMA2 period", min_value=5, max_value=500, value=100, step=1
+                    )
+                    data[f"SMA2 {period2}"] = data["Adj Close"].rolling(period2).mean()
+                    data2[f"SMA2 {period2}"] = data[f"SMA2 {period2}"].reindex(data2.index)
+                linebutton = st.button('Linechart Set')
+            st.subheader("Chart")
+            st.line_chart(data2, height=400)
+            if st.checkbox("View quotes"):
+                st.subheader(f"{asset} historical data")
+                st.write(data2)
+    with right:
+        summarytable = st.beta_container()
+        with summarytable:
+            urlfortable = 'https://stockanalysis.com/stocks/' + asset
+            page = requests.get(urlfortable)
+            doc = lh.fromstring(page.content)
+            tr_elements = doc.xpath('//tr')
+            i = 0
+            i2 = 0
+            tablecount = 0
+            mylist1 = []
+            mylist2 = []
+            mylist3 = []
+            mylist4 = []
+            for tablecount in range(9):
+                for t in tr_elements[tablecount]:
+                    i += 1
+                    if (i % 2) == 0:
+                        value1 = t.text_content()
+                        mylist1.append(str(value1))
+                    else:
+                        name1 = t.text_content()
+                        mylist2.append(str(name1))
+            for tablecount2 in range(9, 18):
+                for t2 in tr_elements[tablecount2]:
+                    i2 += 1
+                    if (i2 % 2) == 0:
+                        value2 = t2.text_content()
+                        mylist3.append(str(value2))
+                    else:
+                        name2 = t2.text_content()
+                        mylist4.append(str(name2))
+            final_table = pd.DataFrame(
+                {"": list(mylist2), "Value": list(mylist1), " ": list(mylist4), "Value ": list(mylist3)})
+            final_table.index = [""] * len(final_table)
+            st.subheader("Summary")
+            st.table(final_table)
+
+        st.subheader("About")
+        st.info(info['longBusinessSummary'])
+
     def candle(asset):
         candlechart_expander = st.beta_expander(label='Candlestick Chart Settings', expanded= True)
         with candlechart_expander:
@@ -269,91 +354,7 @@ if menubar == 'Overview':
             st.plotly_chart(fig_candle, use_container_width=True, config=config)
 
     candle(asset)
-
-    left, right = st.beta_columns([1, 1])
-    with left:
-        st.subheader("Line Chart")
-        linechart = st.beta_container()
-        with linechart:
-            linechart_expander = st.beta_expander(label='Line Chart Settings')
-            with linechart_expander:
-                ticker = yf.Ticker(asset)
-                info = ticker.info
-                attri = ['SMA', 'SMA2']
-                attributes = st.multiselect(
-                    'Choose Chart Attributes [SMA, SMA2]',
-                    attri,
-                    default='SMA'
-                )
-                data0 = load_quotes(asset)
-                data = data0.copy().dropna()
-                data.index.name = None
-                section = st.slider(
-                    "Number of quotes",
-                    min_value=30,
-                    max_value=min([2000, data.shape[0]]),
-                    value=500,
-                    step=10,
-                )
-                data2 = data[-section:]["Adj Close"].to_frame("Adj Close")
-                if "SMA" in attributes:
-                    period = st.slider(
-                        "SMA period", min_value=5, max_value=500, value=20, step=1
-                    )
-                    data[f"SMA {period}"] = data["Adj Close"].rolling(period).mean()
-                    data2[f"SMA {period}"] = data[f"SMA {period}"].reindex(data2.index)
-                if "SMA2" in attributes:
-                    period2 = st.slider(
-                        "SMA2 period", min_value=5, max_value=500, value=100, step=1
-                    )
-                    data[f"SMA2 {period2}"] = data["Adj Close"].rolling(period2).mean()
-                    data2[f"SMA2 {period2}"] = data[f"SMA2 {period2}"].reindex(data2.index)
-                linebutton = st.button('Linechart Set')
-            st.subheader("Chart")
-            st.line_chart(data2, height=400)
-            if st.checkbox("View quotes"):
-                st.subheader(f"{asset} historical data")
-                st.write(data2)
-    with right:
-        summarytable = st.beta_container()
-        with summarytable:
-            urlfortable = 'https://stockanalysis.com/stocks/' + asset
-            page = requests.get(urlfortable)
-            doc = lh.fromstring(page.content)
-            tr_elements = doc.xpath('//tr')
-            i = 0
-            i2 = 0
-            tablecount = 0
-            mylist1 = []
-            mylist2 = []
-            mylist3 = []
-            mylist4 = []
-            for tablecount in range(9):
-                for t in tr_elements[tablecount]:
-                    i += 1
-                    if (i % 2) == 0:
-                        value1 = t.text_content()
-                        mylist1.append(str(value1))
-                    else:
-                        name1 = t.text_content()
-                        mylist2.append(str(name1))
-            for tablecount2 in range(9, 18):
-                for t2 in tr_elements[tablecount2]:
-                    i2 += 1
-                    if (i2 % 2) == 0:
-                        value2 = t2.text_content()
-                        mylist3.append(str(value2))
-                    else:
-                        name2 = t2.text_content()
-                        mylist4.append(str(name2))
-            final_table = pd.DataFrame(
-                {"": list(mylist2), "Value": list(mylist1), " ": list(mylist4), "Value ": list(mylist3)})
-            final_table.index = [""] * len(final_table)
-            st.subheader("Summary")
-            st.table(final_table)
-
-        st.subheader("About")
-        st.info(info['longBusinessSummary'])
+    
     st.subheader("News")
     urlq = 'https://stockanalysis.com/stocks/' + asset
     responseq = requests.get(urlq)
