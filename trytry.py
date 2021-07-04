@@ -13,39 +13,43 @@ ticker = st.sidebar.selectbox(
     symbols)
 
 
-def calcMovingAverage(data, size):
-    df = data.copy()
-    df['sma'] = df['Adj Close'].rolling(size).mean()
-    df['ema'] = df['Adj Close'].ewm(span=size, min_periods=size).mean()
+numYearMA = 2
+windowSizeMA = 15
+
+def calcMovingAverage(numYearMA, windowSizeMA):
+    df = numYearMA.copy()
+    df['sma'] = df['Adj Close'].rolling(windowSizeMA).mean()
+    df['ema'] = df['Adj Close'].ewm(span=windowSizeMA, min_periods=windowSizeMA).mean()
     df.dropna(inplace=True)
     return df
 
+calcMovingAverage(numYearMA, windowSizeMA)
 
-def calc_macd(data):
-    df = data.copy()
+def calc_macd(numYearMA):
+    df = numYearMA.copy()
     df['ema12'] = df['Adj Close'].ewm(span=12, min_periods=12).mean()
     df['ema26'] = df['Adj Close'].ewm(span=26, min_periods=26).mean()
     df['macd'] = df['ema12'] - df['ema26']
     df['signal'] = df['macd'].ewm(span=9, min_periods=9).mean()
     df.dropna(inplace=True)
     return df
+calc_macd(numYearMA)
 
-
-def calcBollinger(data, size):
-    df = data.copy()
-    df["sma"] = df['Adj Close'].rolling(size).mean()
-    df["bolu"] = df["sma"] + 2 * df['Adj Close'].rolling(size).std(ddof=0)
-    df["bold"] = df["sma"] - 2 * df['Adj Close'].rolling(size).std(ddof=0)
+def calcBollinger(numYearMA, windowSizeMA):
+    df = numYearMA.copy()
+    df["sma"] = df['Adj Close'].rolling(windowSizeMA).mean()
+    df["bolu"] = df["sma"] + 2 * df['Adj Close'].rolling(windowSizeMA).std(ddof=0)
+    df["bold"] = df["sma"] - 2 * df['Adj Close'].rolling(windowSizeMA).std(ddof=0)
     df["width"] = df["bolu"] - df["bold"]
     df.dropna(inplace=True)
     return df
+calcBollinger(numYearMA, windowSizeMA)
 
 
 st.title('Technical Indicators')
 st.subheader('Moving Average')
 
-numYearMA = 2
-windowSizeMA = 15
+
 
 start = dt.datetime.today() - dt.timedelta(numYearMA * 365)
 end = dt.datetime.today()
