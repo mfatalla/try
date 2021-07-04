@@ -118,8 +118,9 @@ if menubar == 'Overview':
 
     left, right = st.beta_columns([1, 1])
     with left:
-
+        st.write("")
         def candle(asset):
+            st.subheader('Market Profile Chart (US S&P 500)')
             intervalList = ["1m", "5m", "15m", "30m"]
             interval_candle = st.selectbox(
                 'Interval in minutes',
@@ -237,7 +238,6 @@ if menubar == 'Overview':
                 row=1, col=2
             )
             fig_candle.update_layout(
-                title_text='Market Profile Chart (US S&P 500)',  # title of plot
                 bargap=0.01,  # gap between bars of adjacent location coordinates,
                 showlegend=False,
 
