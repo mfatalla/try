@@ -106,7 +106,7 @@ with formtab:
 if menubar == 'Overview':
     left, right = st.beta_columns([1,1])
     with left:
-        st.title("Line Chart")
+        st.subheader("Line Chart")
         linechart = st.beta_container()
         with linechart:
             linechart_expander = st.beta_expander(label='Line Chart Settings')
@@ -149,7 +149,6 @@ if menubar == 'Overview':
                 st.subheader(f"{asset} historical data")
                 st.write(data2)
     with right:
-        st.image('data//logo1.png')
         summarytable = st.beta_container()
         with summarytable:
             urlfortable = 'https://stockanalysis.com/stocks/'+asset
@@ -184,8 +183,9 @@ if menubar == 'Overview':
             final_table = pd.DataFrame(
                 {"": list(mylist2), "Value": list(mylist1), " ": list(mylist4), "Value ": list(mylist3)})
             final_table.index = [""] * len(final_table)
-            st.title("Summary")
+            st.subheader("Summary")
             st.table(final_table)
+    st.subheader("News")
     urlq = 'https://stockanalysis.com/stocks/' + asset
     responseq = requests.get(urlq)
     soupq = BeautifulSoup(responseq.text, 'html.parser')
