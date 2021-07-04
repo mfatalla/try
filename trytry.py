@@ -264,6 +264,7 @@ if menubar == 'Overview':
         candle(asset)
 
     with right:
+        st.write("")
         summarytable = st.beta_container()
         with summarytable:
             urlfortable = 'https://stockanalysis.com/stocks/' + asset
