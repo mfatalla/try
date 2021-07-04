@@ -44,13 +44,8 @@ def calcBollinger(data, size):
 st.title('Technical Indicators')
 st.subheader('Moving Average')
 
-coMA1, coMA2 = st.beta_columns(2)
-
-with coMA1:
-    numYearMA = st.number_input('Insert period (Year): ', min_value=1, max_value=10, value=2, key=0)
-
-with coMA2:
-    windowSizeMA = st.number_input('Window Size (Day): ', min_value=5, max_value=500, value=20, key=1)
+numYearMA = 2
+windowSizeMA = 15
 
 start = dt.datetime.today() - dt.timedelta(numYearMA * 365)
 end = dt.datetime.today()
