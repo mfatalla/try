@@ -356,8 +356,6 @@ elif menubar == 'Technical Indicators':
         if chartdays:
             st.experimental_set_query_params(chartdays=dayList.index(chartdays))
 
-        candlebutton = st.button('Candlestick Set')
-
     stock = yf.Ticker(asset)
     history_data = stock.history(interval=interval5, period=str(chartdays) + "d")
     prices = history_data['Close']
