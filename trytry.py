@@ -198,9 +198,7 @@ if menubar == 'Overview':
         hreflinkq = soupq.find_all('div', {'class': 'news-img'})[samplenewscount].find('a')
         linkq = hreflinkq.get('href')
         wapq = newsThumbnailq.get('data-src')
-        chart4q, chart1q, chart2q, chart3q = st.beta_columns([1,1, 2, 3])
-        with chart4q:
-            st.write("")
+        chart1q, chart2q, chart3q = st.beta_columns([1, 2, 3])
         with chart1q:
             st.image(wapq)
         with chart2q:
