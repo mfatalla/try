@@ -335,31 +335,9 @@ elif menubar == 'Technical Indicators':
     def candle(asset):
         candlechart_expander = st.beta_expander(label='Candlestick Chart Settings')
         with candlechart_expander:
-            intervalList = ["1m", "5m", "15m", "30m"]
-            query_paramsa5 = st.experimental_get_query_params()
-            default5 = int(query_paramsa5["interval5"][0]) if "interval5" in query_paramsa5 else 2
-            interval5 = st.selectbox(
-                'Interval in minutes',
-                intervalList,
-                index=default5
-            )
-            if interval5:
-                st.experimental_set_query_params(interval5=intervalList.index(interval5))
-
-            dayList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                       16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-            query_paramsa6 = st.experimental_get_query_params()
-            default6 = int(query_paramsa6["chartdays"][0]) if "chartdays" in query_paramsa6 else 9
-            chartdays = st.selectbox(
-                'No. of Days',
-                dayList,
-                index=default6
-            )
-            if chartdays:
-                st.experimental_set_query_params(chartdays=dayList.index(chartdays))
 
             stock = yf.Ticker(asset)
-            history_data = stock.history(interval=interval5, period=str(chartdays) + "d")
+            history_data = stock.history(interval='30m', period=str(15) + "d")
             prices = history_data['Close']
             volumes = history_data['Volume']
 
