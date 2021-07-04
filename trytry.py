@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import numpy as np
 import datetime as dt
-import YahooQuery as Ticker
+import yahooquery as yq
 
 st.set_page_config(
     page_title = 'SLAPSOIL',
@@ -330,7 +330,7 @@ elif menubar == 'News':
             col1.write("")  # this makes the empty column show up on mobile
         col2.write(f"Page {1 + st.session_state.page2} of {5}")
 elif menubar == 'Technical Indicators':
-    tickers = Ticker(asset)
+    ticker_input_ti = yq(asset)
     history_args = {
         "period": "1y",
         "interval": "1d",
@@ -340,7 +340,7 @@ elif menubar == 'Technical Indicators':
     option_1 = st.selectbox("Select Period or Start / End Dates", ["Period", "Dates"], 0)
     if option_1 == "Period":
         history_args["period"] = st.selectbox(
-            "Select Period", options=Ticker.PERIODS, index=5  # pylint: disable=protected-access
+            "Select Period", options=yq.PERIODS, index=5  # pylint: disable=protected-access
         )
 
         history_args["start"] = None
@@ -352,17 +352,16 @@ elif menubar == 'Technical Indicators':
 
     st.markdown("**THEN**")
     history_args["interval"] = st.selectbox(
-        "Select Interval", options=Ticker.INTERVALS, index=8  # pylint: disable=protected-access
+        "Select Interval", options=yq.INTERVALS, index=8  # pylint: disable=protected-access
     )
     args_string = [str(k) + "='" + str(v) + "'" for k, v in history_args.items() if v is not None]
     st.write("Dataframe")
-    dataframe = tickers.history(**history_args)
+    dataframe_ti = ticker_input_ti.history(**history_args)
 
-    if isinstance(dataframe, dict):
-        st.write(dataframe)
+    if isinstance(dataframe_ti, dict):
+        st.write(dataframe_ti)
     else:
-
-        st.dataframe(dataframe)
+        st.dataframe(dataframe_ti)
 
 elif menubar == 'Company Profile':
     profile = st.beta_container()
