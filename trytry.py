@@ -8,15 +8,17 @@ import numpy as np
 def candlestick():
     candlechart_expander = st.beta_expander(label='Line Chart Settings')
     with candlechart_expander:
-        
+
         intervalList = ["1m", "5m", "15m", "30m"]
         query_paramsa5 = st.experimental_get_query_params()
-        default5 = int(query_paramsa5["sort"][0]) if "sort" in query_paramsa5 else 2
-        interval = st.selectbox(
+        default5 = int(query_paramsa5["interval_candle"][0]) if "interval_candle" in query_paramsa5 else 2
+        interval_candle = st.selectbox(
             'Interval in minutes',
             intervalList,
             index=default5
         )
+        if interval_candle:
+            st.experimental_set_query_params(interval_candle=intervalList.index(interval_candle))
 
         stock = yf.Ticker('NFLX')
         history_data = stock.history(interval='30m', period=str(15) + "d")
