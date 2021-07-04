@@ -20,8 +20,20 @@ def candlestick():
         if interval_candle:
             st.experimental_set_query_params(interval_candle=intervalList.index(interval_candle))
 
+        dayList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                   16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+        query_paramsa6 = st.experimental_get_query_params()
+        default6 = int(query_paramsa6["chartdays"][0]) if "chartdays" in query_paramsa6 else 9
+        chartdays = st.selectbox(
+            'No. of Days',
+            dayList,
+            index=default6
+        )
+        if chartdays:
+            st.experimental_set_query_params(chartdays=dayList.index(chartdays))
+
         stock = yf.Ticker('NFLX')
-        history_data = stock.history(interval='30m', period=str(15) + "d")
+        history_data = stock.history(interval=interval_candle, period=str(chartdays) + "d")
         prices = history_data['Close']
         volumes = history_data['Volume']
 
