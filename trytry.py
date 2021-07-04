@@ -122,25 +122,18 @@ if menubar == 'Overview':
         def candle(asset):
             candlechart_expander = st.beta_expander(label='Candlestick Chart Settings', expanded=True)
             with candlechart_expander:
-
-                CL_L, candle_left, candle_right, CL_R = st.beta_columns([1, 2, 2, 1])
-                with CL_R:
-                    st.write("")
-                with CL_L:
-                    st.write("")
-                with candle_left:
-                    intervalList = ["1m", "5m", "15m", "30m"]
-                    interval_candle = st.selectbox(
-                        'Interval in minutes',
-                        intervalList,
-                    )
-                with candle_right:
-                    dayList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                intervalList = ["1m", "5m", "15m", "30m"]
+                interval_candle = st.selectbox(
+                    'Interval in minutes',
+                    intervalList,
+                )
+                dayList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                                16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-                    chartdays = st.selectbox(
-                        'No. of Days',
-                        dayList,
-                    )
+                chartdays = st.selectbox(
+                    'No. of Days',
+                    dayList,
+                )
+
                 stock = yf.Ticker(asset)
                 history_data = stock.history(interval=interval_candle, period=str(chartdays) + "d")
                 prices = history_data['Close']
@@ -270,8 +263,6 @@ if menubar == 'Overview':
                     'modeBarButtonsToAdd': ['drawline']
                 }
                 st.plotly_chart(fig_candle, use_container_width=True, config=config)
-
-
         candle(asset)
 
     with right:
