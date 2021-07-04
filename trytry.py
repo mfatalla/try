@@ -5,9 +5,11 @@ import streamlit as st
 import yfinance as yf
 from bs4 import BeautifulSoup
 import plotly.graph_objects as go
+import technical
 from plotly.subplots import make_subplots
 import numpy as np
 import datetime as dt
+
 st.set_page_config(
     page_title = 'SLAPSOIL',
     page_icon = '💜',
@@ -213,17 +215,38 @@ if menubar == 'Overview':
         with chart3q:
             st.markdown(subMetaq)
     st.text(" ")
-
 elif menubar == 'News':
-
-    Cnews = st.beta_expander("Company News")
+    if "page" not in st.session_state:
+        st.session_state.page = 0
+        st.session_state.count = 5
+    def next_page():
+        st.session_state.page += 1
+        st.session_state.count += 5
+    def prev_page():
+        st.session_state.page -= 1
+        st.session_state.count -= 5
+    if "page2" not in st.session_state:
+        st.session_state.page2 = 0
+        st.session_state.count2 = 5
+    if "count2" not in st.session_state:
+        st.session_state.page2 = 0
+        st.session_state.count2 = 5
+    def next_page2():
+        st.session_state.page2 += 1
+        st.session_state.count2 += 5
+    def prev_page2():
+        st.session_state.page2 -= 1
+        st.session_state.count2 -= 5
+    Cnews = st.beta_expander("Company News", expanded=True)
     with Cnews:
-        url = 'https://stockanalysis.com/stocks/' + asset
+        endp = st.session_state.count
+        startp = endp - 5
+        url = 'https://stockanalysis.com/stocks/'+asset
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         name = soup.find('h1', {'class': 'sa-h1'}).text
         x = 0
-        for x in range(10):
+        for x in range(startp,endp):
             newsTitle = soup.find_all('div', {'class': 'news-side'})[x].find('div').text
             newsThumbnail = soup.find_all('div', {'class': 'news-img'})[x].find('img')
             newsBody = soup.find_all('div', {'class': 'news-text'})[x].find('p').text
@@ -246,16 +269,28 @@ elif menubar == 'News':
             with chart3:
                 st.markdown(subMeta)
         st.text(" ")
-
-    Onews = st.beta_expander("Stock Market News")
+        st.write("")
+        col1, col2, col3, _ = st.beta_columns([0.1, 0.17, 0.1, 0.63])
+        if st.session_state.page < 4:
+            col3.button(">", on_click=next_page)
+        else:
+            col3.write("")  # t
+            # his makes the empty column show up on mobile
+        if st.session_state.page > 0:
+            col1.button("<", on_click=prev_page)
+        else:
+            col1.write("")  # this makes the empty column show up on mobile
+        col2.write(f"Page {1 + st.session_state.page} of {5}")
     Onews = st.beta_expander("Stock Market News", expanded=False)
     with Onews:
+        Oendp = st.session_state.count2
+        Ostartp = Oendp - 5
         url = 'https://stockanalysis.com/news'
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         title = soup.find('h1', {'class': 'entry-title'}).text
         x = 0
-        for x in range(10):
+        for x in range(Ostartp,Oendp):
             newsTitle1 = soup.find_all('div', {'class': 'news-side'})[x].find('div').text
             time1 = soup.find_all('div', {'class': 'news-meta'})[x].find('span').text
             newsThumbnail1 = soup.find_all('div', {'class': 'news-img'})[x].find('img')
@@ -277,47 +312,104 @@ elif menubar == 'News':
                 st.text(" ")
             with chart3:
                 st.markdown(time1)
-
         st.text(" ")
-
-    Cnews = st.beta_expander("Company News",expanded=True)
-    with Cnews:
-        url = 'https://stockanalysis.com/stocks/' + asset
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        name = soup.find('h1', {'class': 'sa-h1'}).text
-        x = 0
-        for x in range(10):
-            newsTitle = soup.find_all('div', {'class': 'news-side'})[x].find('div').text
-            newsThumbnail = soup.find_all('div', {'class': 'news-img'})[x].find('img')
-            newsBody = soup.find_all('div', {'class': 'news-text'})[x].find('p').text
-            subMeta = soup.find_all('div', {'class': 'news-meta'})[x].find_next('span').text
-            hreflink = soup.find_all('div', {'class': 'news-img'})[x].find('a')
-            link = hreflink.get('href')
-            wap = newsThumbnail.get('data-src')
-            chart1, chart2, chart3 = st.beta_columns([1, 2, 1])
-            with chart1:
-                st.image(wap)
-            with chart2:
-                st.markdown(f"<h1 style='font-weight: bold; font-size: 17px;'>{newsTitle}</h1>",
-                            unsafe_allow_html=True)
-                st.markdown(newsBody)
-                link = "(" + link + ")"
-                aye = '[[Link]]' + link
-                st.markdown("Source: " + aye, unsafe_allow_html=True)
-                st.text(" ")
-                st.text(" ")
-            with chart3:
-                st.markdown(subMeta)
         st.text(" ")
+        col1, col2, col3, _ = st.beta_columns([0.1, 0.17, 0.1, 0.63])
+        if st.session_state.page2 < 4:
+            col3.button("> ", on_click=next_page2)
+        else:
+            col3.write("")  # t
+            # his makes the empty column show up on mobile
+        if st.session_state.page > 0:
+            col1.button("< ", on_click=prev_page2)
+        else:
+            col1.write("")  # this makes the empty column show up on mobile
+
+        col2.write(f"Page {1 + st.session_state.page2} of {5}")
 
 
 
 
 elif menubar == 'Technical Indicators':
     st.image('data//logo1.png')
+
+
+
 elif menubar == 'Company Profile':
+    st.title('Company Profile')
+    st.subheader(info['longName'])
+    st.markdown('** Sector **: ' + info['sector'])
+    st.markdown('** Industry **: ' + info['industry'])
+    st.markdown('** Phone **: ' + info['phone'])
+    st.markdown(
+        '** Address **: ' + info['address1'] + ', ' + info['city'] + ', ' + info['zip'] + ', ' + info['country'])
+    st.markdown('** Website **: ' + info['website'])
+    st.markdown('** Business Summary **')
+    st.info(info['longBusinessSummary'])
+
+    fundInfo = {
+        'Enterprise Value (USD)': info['enterpriseValue'],
+        'Enterprise To Revenue Ratio': info['enterpriseToRevenue'],
+        'Enterprise To Ebitda Ratio': info['enterpriseToEbitda'],
+        'Net Income (USD)': info['netIncomeToCommon'],
+        'Profit Margin Ratio': info['profitMargins'],
+        'Forward PE Ratio': info['forwardPE'],
+        'PEG Ratio': info['pegRatio'],
+        'Price to Book Ratio': info['priceToBook'],
+        'Forward EPS (USD)': info['forwardEps'],
+        'Beta ': info['beta'],
+        'Book Value (USD)': info['bookValue'],
+        'Dividend Rate (%)': info['dividendRate'],
+        'Dividend Yield (%)': info['dividendYield'],
+        'Five year Avg Dividend Yield (%)': info['fiveYearAvgDividendYield'],
+        'Payout Ratio': info['payoutRatio']
+    }
+
+    fundDF = pd.DataFrame.from_dict(fundInfo, orient='index')
+    fundDF = fundDF.rename(columns={0: 'Value'})
+    st.subheader('Fundamental Info')
+    st.table(fundDF)
+
+    st.subheader('General Stock Info')
+    st.markdown('** Market **: ' + info['market'])
+    st.markdown('** Exchange **: ' + info['exchange'])
+    st.markdown('** Quote Type **: ' + info['quoteType'])
+
+    start = dt.datetime.today() - dt.timedelta(2 * 365)
+    end = dt.datetime.today()
+    df = yf.download(asset, start, end)
+    df = df.reset_index()
+    fig = go.Figure(
+        data=go.Scatter(x=df['Date'], y=df['Adj Close'])
+    )
+    fig.update_layout(
+        title={
+            'text': "Stock Prices Over Past Two Years",
+            'y': 0.9,
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'})
+    st.plotly_chart(fig, use_container_width=True)
+
+    marketInfo = {
+        "Volume": info['volume'],
+        "Average Volume": info['averageVolume'],
+        "Market Cap": info["marketCap"],
+        "Float Shares": info['floatShares'],
+        "Regular Market Price (USD)": info['regularMarketPrice'],
+        'Bid Size': info['bidSize'],
+        'Ask Size': info['askSize'],
+        "Share Short": info['sharesShort'],
+        'Short Ratio': info['shortRatio'],
+        'Share Outstanding': info['sharesOutstanding']
+
+    }
+
+    marketDF = pd.DataFrame(data=marketInfo, index=[0])
+    st.table(marketDF)
+
     st.image('data//logo1.png')
+
 elif menubar == 'About':
     st.image('data//logo1.png')
 else:
