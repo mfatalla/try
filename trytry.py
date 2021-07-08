@@ -17,7 +17,6 @@ from pmdarima.arima import auto_arima
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 import math
 import numpy as np
-from yahooquery import Ticker
 import datetime as dt
 import yfinance as yf
 import plotly.graph_objects as go
@@ -495,17 +494,9 @@ elif menubar == 'Technical Indicators':
             "end": None,
         }
 
-        history_args["period"] = st.selectbox(
-            "Select Period", options=Ticker.PERIODS, index=5  # pylint: disable=protected-access
-        )
-        history_args["interval"] = st.selectbox(
-            "Select Interval", options=Ticker.INTERVALS, index=8  # pylint: disable=protected-access
-        )
-        intervalT = history_args["interval"]
-        periodT = history_args["period"]
 
         ticker_input_2 = yf.Ticker(asset)
-        datatest = ticker_input_2.history(period=periodT, interval=intervalT)
+        datatest = ticker_input_2.history(period='2y', interval='1d')
 
         line_fig = plt.figure(figsize=(10, 6))
         plt.grid(True)
