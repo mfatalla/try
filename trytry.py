@@ -484,36 +484,6 @@ elif menubar == 'Technical Indicators':
             st.subheader(f"{asset} historical data")
             st.write(data2)
 
-    chart_cont = st.beta_container()
-    with chart_cont:
-
-        history_args = {
-            "period": "1y",
-            "interval": "1d",
-            "start": dt.datetime.now() - dt.timedelta(days=365),
-            "end": None,
-        }
-
-
-        ticker_input_2 = yf.Ticker(asset)
-        datatest = ticker_input_2.history(period='2y', interval='1d')
-
-        line_fig = plt.figure(figsize=(10, 6))
-        plt.grid(True)
-        plt.xlabel('Dates')
-        plt.ylabel('Close Prices')
-        plt.plot(datatest['Close'])
-        plt.title((asset) + ' closing price')
-
-        st.subheader("Figure1")
-        st.pyplot(line_fig)
-
-        df_close = datatest['Close']
-        df_close.plot(style='k.')
-        plt.title('Scatter plot of closing price')
-        st.subheader("Figure 2")
-        scatter_fig = line_fig
-        st.pyplot(scatter_fig)
 
 
 
