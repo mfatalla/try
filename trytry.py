@@ -3,19 +3,7 @@ import lxml.html as lh
 from bs4 import BeautifulSoup
 from plotly.subplots import make_subplots
 import streamlit as st
-import warnings
-warnings.filterwarnings('ignore')
 import pandas as pd
-import matplotlib.pyplot as plt
-plt.style.use('fivethirtyeight')
-from pylab import rcParams
-rcParams['figure.figsize'] = 10, 6
-from statsmodels.tsa.stattools import adfuller
-from statsmodels.tsa.seasonal import seasonal_decompose
-from statsmodels.tsa.arima_model import ARIMA
-from pmdarima.arima import auto_arima
-from sklearn.metrics import mean_squared_error, mean_absolute_error
-import math
 import numpy as np
 import datetime as dt
 import yfinance as yf
