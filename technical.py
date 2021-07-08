@@ -204,4 +204,4 @@ def Scrappy(tickerinput):
     st.plotly_chart(figBoll, use_container_width=True)
 
 
-Scrappy()
+Scrappy(tickerinput)
