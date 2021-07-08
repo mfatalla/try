@@ -562,7 +562,7 @@ elif menubar == 'Technical Indicators':
         plt.legend()
         st.subheader("Figure 3")
         st.pyplot(summary_fig)
-        st.write(df_log)
+
         # split data into train and training set
         train_data, test_data = df_log[3:int(len(df_log) * 0.9)], df_log[int(len(df_log) * 0.9):]
         predict_fig = plt.figure(figsize=(10, 6))
@@ -574,6 +574,7 @@ elif menubar == 'Technical Indicators':
         plt.legend()
         st.subheader("Figure 4")
         st.pyplot(predict_fig)
+        st.write(len(df_log))
 
         model_autoARIMA = auto_arima(train_data, start_p=0, start_q=0,
                                      test='adf',  # use adftest to find             optimal 'd'
