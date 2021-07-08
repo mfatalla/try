@@ -601,7 +601,7 @@ elif menubar == 'Technical Indicators':
         fc_series = pd.Series(fc, index=test_data.index)
         lower_series = pd.Series(conf[:, 0], index=test_data.index)
         upper_series = pd.Series(conf[:, 1], index=test_data.index)
-        wap = plt.figure(figsize=(12, 5), dpi=100)
+        fig_6 = plt.figure(figsize=(12, 5), dpi=100)
         plt.plot(train_data, label='training')
         plt.plot(test_data, color='blue', label='Actual Stock Price')
         plt.plot(fc_series, color='orange', label='Predicted Stock Price')
@@ -611,7 +611,7 @@ elif menubar == 'Technical Indicators':
         plt.xlabel('Time')
         plt.ylabel('Actual Stock Price')
         plt.legend(loc='upper left', fontsize=8)
-        st.pyplot(wap)
+        st.pyplot(fig_6)
 
         # report performance
         mse = mean_squared_error(test_data, fc)
